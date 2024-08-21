@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
             socket.emit('room not found');
         }
     });
-    
+
     socket.on('play with cpu', (userName) => {
         const roomId = generateRoomId();
         socket.join(roomId);
@@ -69,7 +69,7 @@ io.on("connection", (socket) => {
         selectedMode = 'singleplayer';
         io.to(roomId).emit('can play now', roomId, activeRooms);
     });
-    
+
     socket.on('play again', (roomId) => {
         console.log(activeRooms[roomId])
         activeRooms[roomId].totalScore = 0;
@@ -119,7 +119,7 @@ io.on("connection", (socket) => {
             }
             else if (activeRooms[roomId].isBothPlayed && prevPlayerTotalScore < activeRooms[roomId].totalScore + +(activeRooms[roomId].users[0].score)) {
                 io.to(roomId).emit('user2 won match', activeRooms[roomId].users[0].userName, roomId);
-                    console.log(activeRooms[roomId]);
+                console.log(activeRooms[roomId]);
             }
             else {
                 console.log(activeRooms[roomId]);
@@ -129,6 +129,18 @@ io.on("connection", (socket) => {
                 io.to(roomId).emit('score updated', activeRooms);
             }
         }
+    });
+    
+    socket.on('offer', (offer) => {
+        socket.broadcast.emit('offer', offer);
+    });
+
+    socket.on('answer', (answer) => {
+        socket.broadcast.emit('answer', answer);
+    });
+
+    socket.on('candidate', (candidate) => {
+        socket.broadcast.emit('candidate', candidate);
     });
 
     socket.on('disconnect', () => {
